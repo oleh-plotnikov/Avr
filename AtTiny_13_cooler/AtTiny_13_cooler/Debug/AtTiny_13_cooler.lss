@@ -1,0 +1,297 @@
+
+AtTiny_13_cooler.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000190  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00800060  000001e4  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  000001e4  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000214  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000058  00000000  00000000  00000250  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   000008e0  00000000  00000000  000002a8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 000004e1  00000000  00000000  00000b88  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   00000414  00000000  00000000  00001069  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  000000cc  00000000  00000000  00001480  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    00000307  00000000  00000000  0000154c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    0000038e  00000000  00000000  00001853  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000048  00000000  00000000  00001be1  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	09 c0       	rjmp	.+18     	; 0x14 <__ctors_end>
+   2:	0e c0       	rjmp	.+28     	; 0x20 <__bad_interrupt>
+   4:	0d c0       	rjmp	.+26     	; 0x20 <__bad_interrupt>
+   6:	0c c0       	rjmp	.+24     	; 0x20 <__bad_interrupt>
+   8:	0b c0       	rjmp	.+22     	; 0x20 <__bad_interrupt>
+   a:	0a c0       	rjmp	.+20     	; 0x20 <__bad_interrupt>
+   c:	09 c0       	rjmp	.+18     	; 0x20 <__bad_interrupt>
+   e:	08 c0       	rjmp	.+16     	; 0x20 <__bad_interrupt>
+  10:	07 c0       	rjmp	.+14     	; 0x20 <__bad_interrupt>
+  12:	06 c0       	rjmp	.+12     	; 0x20 <__bad_interrupt>
+
+00000014 <__ctors_end>:
+  14:	11 24       	eor	r1, r1
+  16:	1f be       	out	0x3f, r1	; 63
+  18:	cf e9       	ldi	r28, 0x9F	; 159
+  1a:	cd bf       	out	0x3d, r28	; 61
+  1c:	94 d0       	rcall	.+296    	; 0x146 <main>
+  1e:	b6 c0       	rjmp	.+364    	; 0x18c <_exit>
+
+00000020 <__bad_interrupt>:
+  20:	ef cf       	rjmp	.-34     	; 0x0 <__vectors>
+
+00000022 <OWI_find>:
+
+char convert (unsigned int td)
+{
+	char dat = td >> 4;
+	return dat;
+}
+  22:	9f b7       	in	r25, 0x3f	; 63
+  24:	f8 94       	cli
+  26:	b8 9a       	sbi	0x17, 0	; 23
+  28:	8a eb       	ldi	r24, 0xBA	; 186
+  2a:	8a 95       	dec	r24
+  2c:	f1 f7       	brne	.-4      	; 0x2a <OWI_find+0x8>
+  2e:	b8 98       	cbi	0x17, 0	; 23
+  30:	89 e1       	ldi	r24, 0x19	; 25
+  32:	8a 95       	dec	r24
+  34:	f1 f7       	brne	.-4      	; 0x32 <OWI_find+0x10>
+  36:	86 b3       	in	r24, 0x16	; 22
+  38:	9f bf       	out	0x3f, r25	; 63
+  3a:	91 ea       	ldi	r25, 0xA1	; 161
+  3c:	9a 95       	dec	r25
+  3e:	f1 f7       	brne	.-4      	; 0x3c <OWI_find+0x1a>
+  40:	80 95       	com	r24
+  42:	81 70       	andi	r24, 0x01	; 1
+  44:	08 95       	ret
+
+00000046 <OWI_write_bit>:
+  46:	9f b7       	in	r25, 0x3f	; 63
+  48:	f8 94       	cli
+  4a:	b8 9a       	sbi	0x17, 0	; 23
+  4c:	00 c0       	rjmp	.+0      	; 0x4e <OWI_write_bit+0x8>
+  4e:	00 00       	nop
+  50:	81 11       	cpse	r24, r1
+  52:	b8 98       	cbi	0x17, 0	; 23
+  54:	89 e1       	ldi	r24, 0x19	; 25
+  56:	8a 95       	dec	r24
+  58:	f1 f7       	brne	.-4      	; 0x56 <OWI_write_bit+0x10>
+  5a:	b8 98       	cbi	0x17, 0	; 23
+  5c:	9f bf       	out	0x3f, r25	; 63
+  5e:	08 95       	ret
+
+00000060 <OWI_write_byte>:
+  60:	ef 92       	push	r14
+  62:	ff 92       	push	r15
+  64:	0f 93       	push	r16
+  66:	1f 93       	push	r17
+  68:	cf 93       	push	r28
+  6a:	df 93       	push	r29
+  6c:	c0 e0       	ldi	r28, 0x00	; 0
+  6e:	d0 e0       	ldi	r29, 0x00	; 0
+  70:	ee 24       	eor	r14, r14
+  72:	e3 94       	inc	r14
+  74:	f1 2c       	mov	r15, r1
+  76:	08 2f       	mov	r16, r24
+  78:	10 e0       	ldi	r17, 0x00	; 0
+  7a:	97 01       	movw	r18, r14
+  7c:	0c 2e       	mov	r0, r28
+  7e:	02 c0       	rjmp	.+4      	; 0x84 <OWI_write_byte+0x24>
+  80:	22 0f       	add	r18, r18
+  82:	33 1f       	adc	r19, r19
+  84:	0a 94       	dec	r0
+  86:	e2 f7       	brpl	.-8      	; 0x80 <OWI_write_byte+0x20>
+  88:	a9 01       	movw	r20, r18
+  8a:	40 23       	and	r20, r16
+  8c:	51 23       	and	r21, r17
+  8e:	24 17       	cp	r18, r20
+  90:	35 07       	cpc	r19, r21
+  92:	19 f4       	brne	.+6      	; 0x9a <OWI_write_byte+0x3a>
+  94:	81 e0       	ldi	r24, 0x01	; 1
+  96:	d7 df       	rcall	.-82     	; 0x46 <OWI_write_bit>
+  98:	02 c0       	rjmp	.+4      	; 0x9e <OWI_write_byte+0x3e>
+  9a:	80 e0       	ldi	r24, 0x00	; 0
+  9c:	d4 df       	rcall	.-88     	; 0x46 <OWI_write_bit>
+  9e:	21 96       	adiw	r28, 0x01	; 1
+  a0:	c8 30       	cpi	r28, 0x08	; 8
+  a2:	d1 05       	cpc	r29, r1
+  a4:	51 f7       	brne	.-44     	; 0x7a <OWI_write_byte+0x1a>
+  a6:	df 91       	pop	r29
+  a8:	cf 91       	pop	r28
+  aa:	1f 91       	pop	r17
+  ac:	0f 91       	pop	r16
+  ae:	ff 90       	pop	r15
+  b0:	ef 90       	pop	r14
+  b2:	08 95       	ret
+
+000000b4 <OWI_read_bit>:
+  b4:	9f b7       	in	r25, 0x3f	; 63
+  b6:	f8 94       	cli
+  b8:	b8 9a       	sbi	0x17, 0	; 23
+  ba:	00 c0       	rjmp	.+0      	; 0xbc <OWI_read_bit+0x8>
+  bc:	00 00       	nop
+  be:	b8 98       	cbi	0x17, 0	; 23
+  c0:	25 e0       	ldi	r18, 0x05	; 5
+  c2:	2a 95       	dec	r18
+  c4:	f1 f7       	brne	.-4      	; 0xc2 <OWI_read_bit+0xe>
+  c6:	86 b3       	in	r24, 0x16	; 22
+  c8:	21 e1       	ldi	r18, 0x11	; 17
+  ca:	2a 95       	dec	r18
+  cc:	f1 f7       	brne	.-4      	; 0xca <OWI_read_bit+0x16>
+  ce:	00 00       	nop
+  d0:	9f bf       	out	0x3f, r25	; 63
+  d2:	81 70       	andi	r24, 0x01	; 1
+  d4:	08 95       	ret
+
+000000d6 <OWI_read_byte>:
+  d6:	1f 93       	push	r17
+  d8:	cf 93       	push	r28
+  da:	df 93       	push	r29
+  dc:	c0 e0       	ldi	r28, 0x00	; 0
+  de:	d0 e0       	ldi	r29, 0x00	; 0
+  e0:	10 e0       	ldi	r17, 0x00	; 0
+  e2:	e8 df       	rcall	.-48     	; 0xb4 <OWI_read_bit>
+  e4:	28 2f       	mov	r18, r24
+  e6:	30 e0       	ldi	r19, 0x00	; 0
+  e8:	0c 2e       	mov	r0, r28
+  ea:	02 c0       	rjmp	.+4      	; 0xf0 <OWI_read_byte+0x1a>
+  ec:	22 0f       	add	r18, r18
+  ee:	33 1f       	adc	r19, r19
+  f0:	0a 94       	dec	r0
+  f2:	e2 f7       	brpl	.-8      	; 0xec <OWI_read_byte+0x16>
+  f4:	12 2b       	or	r17, r18
+  f6:	21 96       	adiw	r28, 0x01	; 1
+  f8:	c8 30       	cpi	r28, 0x08	; 8
+  fa:	d1 05       	cpc	r29, r1
+  fc:	91 f7       	brne	.-28     	; 0xe2 <OWI_read_byte+0xc>
+  fe:	81 2f       	mov	r24, r17
+ 100:	df 91       	pop	r29
+ 102:	cf 91       	pop	r28
+ 104:	1f 91       	pop	r17
+ 106:	08 95       	ret
+
+00000108 <temp_18b20>:
+ 108:	cf 93       	push	r28
+ 10a:	8b df       	rcall	.-234    	; 0x22 <OWI_find>
+ 10c:	81 30       	cpi	r24, 0x01	; 1
+ 10e:	b9 f4       	brne	.+46     	; 0x13e <temp_18b20+0x36>
+ 110:	8c ec       	ldi	r24, 0xCC	; 204
+ 112:	a6 df       	rcall	.-180    	; 0x60 <OWI_write_byte>
+ 114:	84 e4       	ldi	r24, 0x44	; 68
+ 116:	a4 df       	rcall	.-184    	; 0x60 <OWI_write_byte>
+ 118:	87 ed       	ldi	r24, 0xD7	; 215
+ 11a:	90 e0       	ldi	r25, 0x00	; 0
+ 11c:	01 97       	sbiw	r24, 0x01	; 1
+ 11e:	f1 f7       	brne	.-4      	; 0x11c <temp_18b20+0x14>
+ 120:	00 c0       	rjmp	.+0      	; 0x122 <temp_18b20+0x1a>
+ 122:	7f df       	rcall	.-258    	; 0x22 <OWI_find>
+ 124:	8c ec       	ldi	r24, 0xCC	; 204
+ 126:	9c df       	rcall	.-200    	; 0x60 <OWI_write_byte>
+ 128:	8e eb       	ldi	r24, 0xBE	; 190
+ 12a:	9a df       	rcall	.-204    	; 0x60 <OWI_write_byte>
+ 12c:	d4 df       	rcall	.-88     	; 0xd6 <OWI_read_byte>
+ 12e:	c8 2f       	mov	r28, r24
+ 130:	d2 df       	rcall	.-92     	; 0xd6 <OWI_read_byte>
+ 132:	2c 2f       	mov	r18, r28
+ 134:	30 e0       	ldi	r19, 0x00	; 0
+ 136:	a9 01       	movw	r20, r18
+ 138:	58 2b       	or	r21, r24
+ 13a:	ca 01       	movw	r24, r20
+ 13c:	02 c0       	rjmp	.+4      	; 0x142 <temp_18b20+0x3a>
+ 13e:	80 e0       	ldi	r24, 0x00	; 0
+ 140:	90 e0       	ldi	r25, 0x00	; 0
+ 142:	cf 91       	pop	r28
+ 144:	08 95       	ret
+
+00000146 <main>:
+
+int main(void)
+{
+	//DDRB=0x02;
+	PORTB=0x50;
+ 146:	80 e5       	ldi	r24, 0x50	; 80
+ 148:	88 bb       	out	0x18, r24	; 24
+	char T = 0;
+	while(1)
+	{
+		T = convert(temp_18b20());
+ 14a:	de df       	rcall	.-68     	; 0x108 <temp_18b20>
+	return ds18_temp;
+}
+
+char convert (unsigned int td)
+{
+	char dat = td >> 4;
+ 14c:	92 95       	swap	r25
+ 14e:	82 95       	swap	r24
+ 150:	8f 70       	andi	r24, 0x0F	; 15
+ 152:	89 27       	eor	r24, r25
+ 154:	9f 70       	andi	r25, 0x0F	; 15
+ 156:	89 27       	eor	r24, r25
+	PORTB=0x50;
+	char T = 0;
+	while(1)
+	{
+		T = convert(temp_18b20());
+		if (T < 0x32)
+ 158:	82 33       	cpi	r24, 0x32	; 50
+ 15a:	60 f4       	brcc	.+24     	; 0x174 <main+0x2e>
+		{
+			DDRB |=(1<<ALARM);
+ 15c:	bb 9a       	sbi	0x17, 3	; 23
+			PORTB &= ~ (1 << ALARM);
+ 15e:	c3 98       	cbi	0x18, 3	; 24
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 160:	2f ed       	ldi	r18, 0xDF	; 223
+ 162:	84 e0       	ldi	r24, 0x04	; 4
+ 164:	97 e0       	ldi	r25, 0x07	; 7
+ 166:	21 50       	subi	r18, 0x01	; 1
+ 168:	80 40       	sbci	r24, 0x00	; 0
+ 16a:	90 40       	sbci	r25, 0x00	; 0
+ 16c:	e1 f7       	brne	.-8      	; 0x166 <main+0x20>
+ 16e:	00 c0       	rjmp	.+0      	; 0x170 <main+0x2a>
+ 170:	00 00       	nop
+ 172:	eb cf       	rjmp	.-42     	; 0x14a <main+0x4>
+			_delay_ms(2000);
+		}
+		else
+		{
+			DDRB |=(1<<ALARM);
+ 174:	bb 9a       	sbi	0x17, 3	; 23
+			PORTB |=(1<<ALARM);
+ 176:	c3 9a       	sbi	0x18, 3	; 24
+ 178:	2f ed       	ldi	r18, 0xDF	; 223
+ 17a:	84 e0       	ldi	r24, 0x04	; 4
+ 17c:	97 e0       	ldi	r25, 0x07	; 7
+ 17e:	21 50       	subi	r18, 0x01	; 1
+ 180:	80 40       	sbci	r24, 0x00	; 0
+ 182:	90 40       	sbci	r25, 0x00	; 0
+ 184:	e1 f7       	brne	.-8      	; 0x17e <main+0x38>
+ 186:	00 c0       	rjmp	.+0      	; 0x188 <main+0x42>
+ 188:	00 00       	nop
+ 18a:	df cf       	rjmp	.-66     	; 0x14a <main+0x4>
+
+0000018c <_exit>:
+ 18c:	f8 94       	cli
+
+0000018e <__stop_program>:
+ 18e:	ff cf       	rjmp	.-2      	; 0x18e <__stop_program>
