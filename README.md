@@ -1,1 +1,1 @@
-Programm for microprocessor local cooling for solar panels. Cooling method: active, air flow. A device with a digital temperature measurement sensor and a microprocessor to enable / disable cooling system continuously comparing the measured temperature with preset constants. 
+Programm for microprocessor local cooling for solar panels. Cooling method: active, air flow. A device with a digital temperature measurement sensor (DS18b20) and a microprocessor (ATiny 13A) to enable / disable cooling system continuously comparing the measured temperature with preset constants. 
